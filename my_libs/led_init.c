@@ -3,8 +3,8 @@
 /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GPIO CONFIGURATION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< */
 void LED_GPIO_Config(void)
 {
-	RCC->AHB1ENR = RCC_AHB1ENR_GPIODEN; 			//GPIOD clock enabled
-	GPIOD->MODER = GPIO_MODER_MODER15_0 | GPIO_MODER_MODER14_0 | GPIO_MODER_MODER13_0 | GPIO_MODER_MODER12_0; 	//D15-D12 GPO mode
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; 			//GPIOD clock enabled
+	GPIOD->MODER |= GPIO_MODER_MODER15_0 | GPIO_MODER_MODER14_0 | GPIO_MODER_MODER13_0 | GPIO_MODER_MODER12_0; 	//D15-D12 GPO mode
 	GPIOD->OTYPER = 0;
 	GPIOD->OSPEEDR = 0;
 }
