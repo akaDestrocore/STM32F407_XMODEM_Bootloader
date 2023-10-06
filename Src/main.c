@@ -70,7 +70,7 @@ int main(void)
 	ShowMessage(MSG_WELCOME);
 
 	//if the button is pressed, then jump to the user application, otherwise stay in the bootloader
-	if(SET == GPIOA->IDR.bit.idr_0)
+	if(RESET == GPIOA->IDR.bit.idr_0)
 	{
 		ShowMessage(MSG_JUMP);
 		FLASH_Jump();
@@ -78,6 +78,19 @@ int main(void)
 
 	first_byte_already_received = RESET;
 	copy_data = SET;
+
+	//turn ON orange LED
+	GPIOD->ODR.bit.odr_13 = ENABLE;
+	//show 'update in progress' message
+	ShowMessage(MSG_UPDT_IN_PRGS);
+
+	FLASH_Erase(FLASH_APP_START_ADDRESS);
+
+	//turn off orange LED
+	GPIOD->ODR.bit.odr_13 = DISABLE;
+
+	//turn on the green LED to indicate that we are currently booting
+	GPIOD->ODR.bit.odr_12 = ENABLE;
 
 	/* Ask for new data and start the XMODEM protocol communication. */
 	ShowMessage(MSG_ASK_FOR_A_FILE);
@@ -189,11 +202,6 @@ void Firmware_Update(void)
 			  checksum = sum%256;
 			  if(checksum == a_ReadRxData[131])
 			  {
-				  FLASH_Erase(FLASH_APP_START_ADDRESS);
-
-				  GPIOD->ODR.bit.odr_13 = DISABLE;	//turn off orange LED
-				  //turn on the green LED to indicate that we are currently booting
-				  GPIOD->ODR.bit.odr_12 = ENABLE;
 				  if(X_SOH == a_ReadRxData[1])
 				  {
 					  FLASH_Write(a_ActualData, 128, FLASH_APP_START_ADDRESS);
@@ -273,6 +281,10 @@ void ShowMessage(MESSAGE_t msg)
 		{
 			USART_SendString((uint8_t*)"Jumping to user application...\n\r");
 			break;
+		}
+		case MSG_UPDT_IN_PRGS:
+		{
+			USART_SendString((uint8_t*)"Update in progress! Please wait until the operation is over!\n\r");
 		}
 		case MSG_ASK_FOR_A_FILE:
 		{
