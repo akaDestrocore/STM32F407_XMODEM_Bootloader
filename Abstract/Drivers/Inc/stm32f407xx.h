@@ -432,44 +432,44 @@ typedef union{
 	uint32_t reg;
 	struct{
 		volatile uint32_t awd			: 1 ;	/*!< [Bit 0]     Analog watchdog flag         	    				*/
-		volatile uint32_t eoc			: 1 ;	/*!< [Bit 1]     Regular channel end of conversion         	    	*/
-		volatile uint32_t jeoc			: 1 ;	/*!< [Bit 2]     Injected channel end of conversion         	    	*/
-		volatile uint32_t jstrt			: 1 ;	/*!< [Bit 3]     Injected channel start flag		         	    	*/
+		volatile uint32_t eoc			: 1 ;	/*!< [Bit 1]     Regular channel end of conversion         	    		*/
+		volatile uint32_t jeoc			: 1 ;	/*!< [Bit 2]     Injected channel end of conversion         	    		*/
+		volatile uint32_t jstrt			: 1 ;	/*!< [Bit 3]     Injected channel start flag		         		*/
 		volatile uint32_t strt			: 1 ;	/*!< [Bit 4]     Regular channel start flag		         	    	*/
-		volatile uint32_t ovr			: 1 ;	/*!< [Bit 5]     Overrun		         	    						*/
-				  uint32_t reserved		: 2 ;	/*!< [Bits 31:6] Reserved, must be kept at reset value          		*/
+		volatile uint32_t ovr			: 1 ;	/*!< [Bit 5]     Overrun		         	    			*/
+				  uint32_t reserved		: 2 ;	/*!< [Bits 31:6] Reserved, must be kept at reset value          	*/
 		  }bit;
 }ADC_SR_Reg_t;
 
 typedef union{
 	uint32_t reg;
 	struct{
-		volatile uint32_t awdch 		: 5 ;	/*!< [Bits 4:0]   Analog watchdog channel select bits         	    */
-		volatile uint32_t eocie 		: 1 ;	/*!< [Bit 5]      Interrupt enable for EOC			  				*/
-		volatile uint32_t awdie 		: 1 ;	/*!< [Bit 6]      Analog watchdog interrupt enable			  		*/
+		volatile uint32_t awdch 		: 5 ;	/*!< [Bits 4:0]   Analog watchdog channel select bits         	    		*/
+		volatile uint32_t eocie 		: 1 ;	/*!< [Bit 5]      Interrupt enable for EOC			  		*/
+		volatile uint32_t awdie 		: 1 ;	/*!< [Bit 6]      Analog watchdog interrupt enable			  	*/
 		volatile uint32_t jeocie 		: 1 ;	/*!< [Bit 7]      Interrupt enable for injected channels  			*/
-		volatile uint32_t scan 			: 1 ;	/*!< [Bit 8]      Scan mode  										*/
-		volatile uint32_t awdsgl 		: 1 ;	/*!< [Bit 9]      Enable the watchdog on a single channel in scan mode*/
+		volatile uint32_t scan 			: 1 ;	/*!< [Bit 8]      Scan mode  							*/
+		volatile uint32_t awdsgl 		: 1 ;	/*!< [Bit 9]      Enable the watchdog on a single channel in scan mode		*/
 		volatile uint32_t jauto 		: 1 ;	/*!< [Bit 10]     Automatic injected group conversion 				*/
-		volatile uint32_t discen 		: 1 ;	/*!< [Bit 11]     Discontinuous mode on regular channels         	*/
-		volatile uint32_t jdiscen 		: 1 ;	/*!< [Bit 12]     Discontinuous mode on injected channels         	*/
-		volatile uint32_t discnum 		: 3 ;	/*!< [Bits 15:13] Discontinuous mode channel count         	    	*/
-				  uint32_t reserved_0 	: 6 ;	/*!< [Bits 21:16] Reserved, must be kept at reset value          	*/
-		volatile uint32_t jawden 		: 1 ;	/*!< [Bit 22]     Analog watchdog enable on injected channels       */
-		volatile uint32_t awden 		: 1 ;	/*!< [Bit 23]     Analog watchdog enable on regular channels        */
+		volatile uint32_t discen 		: 1 ;	/*!< [Bit 11]     Discontinuous mode on regular channels         		*/
+		volatile uint32_t jdiscen 		: 1 ;	/*!< [Bit 12]     Discontinuous mode on injected channels         		*/
+		volatile uint32_t discnum 		: 3 ;	/*!< [Bits 15:13] Discontinuous mode channel count         	    		*/
+				  uint32_t reserved_0 	: 6 ;	/*!< [Bits 21:16] Reserved, must be kept at reset value          		*/
+		volatile uint32_t jawden 		: 1 ;	/*!< [Bit 22]     Analog watchdog enable on injected channels       		*/
+		volatile uint32_t awden 		: 1 ;	/*!< [Bit 23]     Analog watchdog enable on regular channels        		*/
 		volatile uint32_t res 			: 2 ;	/*!< [Bits 25:24] Resolution                              			*/
-		volatile uint32_t ovrie 		: 1 ;	/*!< [Bit 26] 	  Overrun interrupt enable                          */
-		 	 	  uint32_t reserved_1 	: 5 ;	/*!< [Bits 31:27] Reserved, must be kept at reset value             */
+		volatile uint32_t ovrie 		: 1 ;	/*!< [Bit 26] 	  Overrun interrupt enable                          		*/
+		 	 	  uint32_t reserved_1 	: 5 ;	/*!< [Bits 31:27] Reserved, must be kept at reset value            		 */
 		  }bit;
 }ADC_CR1_Reg_t;
 
 typedef union{
 	uint32_t reg;
 	struct{
-		volatile uint32_t adon 			: 1 ;	/*!< [Bit 0] 	  A/D Converter ON / OFF                                 */
-		volatile uint32_t cont 			: 1 ;	/*!< [Bit 1] 	  Continuous conversion                                  */
-				  uint32_t reserved_0 	: 6 ;	/*!< [Bits 7:2]   Reserved, must be kept at reset value                  */
-		volatile uint32_t dma 			: 1 ;	/*!< [Bit 8] 	  Direct memory access mode (for single ADC mode)   	 */
+		volatile uint32_t adon 			: 1 ;	/*!< [Bit 0] 	  A/D Converter ON / OFF                                 	*/
+		volatile uint32_t cont 			: 1 ;	/*!< [Bit 1] 	  Continuous conversion                                 	*/
+				  uint32_t reserved_0 	: 6 ;	/*!< [Bits 7:2]   Reserved, must be kept at reset value                  	*/
+		volatile uint32_t dma 			: 1 ;	/*!< [Bit 8] 	  Direct memory access mode (for single ADC mode)   	 	*/
 		volatile uint32_t dds 			: 1 ;	/*!< [Bit 9] 	  DMA disable selection (for single ADC mode)   	 	 */
 		volatile uint32_t eocs	 		: 1 ;	/*!< [Bit 10] 	  End of conversion selection 							 */
 		volatile uint32_t align 		: 1 ;	/*!< [Bit 11] 	  Data alignment		 								 */
