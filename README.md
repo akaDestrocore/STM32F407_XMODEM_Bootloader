@@ -47,6 +47,7 @@ After the upload is over there is a message in the terminal:
 After that I uploaded **['ver1_red_blinky.bin'](https://github.com/akaDestrocore/STM32F407_Bootloader_Remake/raw/main/blinky%20binary/ver1_red_blinky.bin)**. And as you can see it is not uploaded onto device because its version is lower then the **['ver2_orange_blinky.bin'](https://github.com/akaDestrocore/STM32F407_Bootloader_Remake/raw/main/blinky%20binary/ver2_orange_blinky.bin)**'s:
 
 ![Screenshot4](https://i.imgur.com/5WAR5UD.png)
+
 After that I uploaded a newer version of firmware -  **['ver3_blue_blinky.bin'](https://github.com/akaDestrocore/STM32F407_Bootloader_Remake/raw/main/blinky%20binary/ver3_blue_blinky.bin)**.
 
 ![Screenshit5](https://i.imgur.com/rkOoAmW.png)
