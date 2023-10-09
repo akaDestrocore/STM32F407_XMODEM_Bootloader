@@ -1,15 +1,15 @@
 /*												@@@@@@@@@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@
- @file     stm32f407xx_rcc.h					@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- @brief    CMSIS STM32F407xx Device Peripheral 	@@@@@@@@@@@@@@@   @@@@@@@     @   @@@@@@@@@@@@@@
-  		   RCC HAL module driver.				@@@@@@@@@@@@@     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@
- @author   destrocore							@@@@@@@@@@@@ @@@  (@@@@@@  @@@@@@@@@@@@@@@@@@@@@
- @version  V1.0									@@@@@@@@@@@@@@@@   @@@@/  @@@@@@@&   &@@.  @@@@@
+ @file     stm32f407xx_rcc.h									@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ @brief    CMSIS STM32F407xx Device Peripheral 							@@@@@@@@@@@@@@@   @@@@@@@     @   @@@@@@@@@@@@@@
+  		   RCC HAL module driver.							@@@@@@@@@@@@@     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@
+ @author   destrocore										@@@@@@@@@@@@ @@@  (@@@@@@  @@@@@@@@@@@@@@@@@@@@@
+ @version  V1.0											@@@@@@@@@@@@@@@@   @@@@/  @@@@@@@&   &@@.  @@@@@
 												@@@@@@@@@@@@@@@@   @@@&  @@@@@     @@@@@@@@ @@@@
-This file provides firmware functions to manage @@@@@@@@@@@@@@@@@   @   @@@.    &@@@@@@@@@@@@@@@
-the following functionalities of the Reset and 	@@@@@@@@@@@@@@@@@             @@@         %   @@
-Clock Control (RCC) peripheral:					@@@@@@@@@@@@@@@@@   @@@@@          @@@@@@@@@@@ @
-+ Initialization and de-initialization function @@@@@@@@@@@@@@@@@@@@@@@.%@  @@@@@  @@@@@@@@@@@@@
-+ Peripheral Control functions					@@@@@@@@@@@@@@@@@@              @@@@@@@@@@@@@@@@
+This file provides firmware functions to manage 						@@@@@@@@@@@@@@@@@   @   @@@.    &@@@@@@@@@@@@@@@
+the following functionalities of the Reset and 							@@@@@@@@@@@@@@@@@             @@@         %   @@
+Clock Control (RCC) peripheral:									@@@@@@@@@@@@@@@@@   @@@@@          @@@@@@@@@@@ @
++ Initialization and de-initialization function 						@@@@@@@@@@@@@@@@@@@@@@@.%@  @@@@@  @@@@@@@@@@@@@
++ Peripheral Control functions									@@@@@@@@@@@@@@@@@@              @@@@@@@@@@@@@@@@
 												@ @@@@@@@@@@@@@@                  @@@@@@@@@@@@@@
 												@@  @@@@@@@@@                  @@@@@@@@@@@@@@@@@
 												@@@@  @@@    @@@@@@@&         .@@@@@@@@@@@@@@@@@
