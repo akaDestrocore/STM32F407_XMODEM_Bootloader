@@ -1,16 +1,16 @@
 /*												@@@@@@@@@@@@@@@@@@@      @@@@@@@@@@@@@@@@@@@@@@@
- @file     stm32f407xx_usart.h					@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- @brief    CMSIS STM32F407xx Device Peripheral 	@@@@@@@@@@@@@@@   @@@@@@@     @   @@@@@@@@@@@@@@
-  		   USART HAL driver.					@@@@@@@@@@@@@     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@
- @author   destrocore							@@@@@@@@@@@@ @@@  (@@@@@@  @@@@@@@@@@@@@@@@@@@@@
- @version  V1.0									@@@@@@@@@@@@@@@@   @@@@/  @@@@@@@&   &@@.  @@@@@
+ @file     stm32f407xx_usart.h									@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ @brief    CMSIS STM32F407xx Device Peripheral 							@@@@@@@@@@@@@@@   @@@@@@@     @   @@@@@@@@@@@@@@
+  		   USART HAL driver.								@@@@@@@@@@@@@     @@@@@@@@  @@@@@@@@@@@@@@@@@@@@
+ @author   destrocore										@@@@@@@@@@@@ @@@  (@@@@@@  @@@@@@@@@@@@@@@@@@@@@
+ @version  V1.0											@@@@@@@@@@@@@@@@   @@@@/  @@@@@@@&   &@@.  @@@@@
 												@@@@@@@@@@@@@@@@   @@@&  @@@@@     @@@@@@@@ @@@@
-This file provides firmware functions to manage @@@@@@@@@@@@@@@@@   @   @@@.    &@@@@@@@@@@@@@@@
-the following functionalities of the Universal 	@@@@@@@@@@@@@@@@@             @@@         %   @@
-Synchronous Asynchronous Receiver Transmitter	@@@@@@@@@@@@@@@@@   @@@@@          @@@@@@@@@@@ @
-peripheral: 	 	 	 	 	 	 	 	 	@@@@@@@@@@@@@@@@@@@@@@@.%@  @@@@@  @@@@@@@@@@@@@
-+ Initialization and de-initialization function	@@@@@@@@@@@@@@@@@@              @@@@@@@@@@@@@@@@
-+ Peripheral Control functions					@ @@@@@@@@@@@@@@                  @@@@@@@@@@@@@@
+This file provides firmware functions to manage		 					@@@@@@@@@@@@@@@@@   @   @@@.    &@@@@@@@@@@@@@@@
+the following functionalities of the Universal 							@@@@@@@@@@@@@@@@@             @@@         %   @@
+Synchronous Asynchronous Receiver Transmitter							@@@@@@@@@@@@@@@@@   @@@@@          @@@@@@@@@@@ @
+peripheral: 	 	 	 	 	 	 	 	 			@@@@@@@@@@@@@@@@@@@@@@@.%@  @@@@@  @@@@@@@@@@@@@
++ Initialization and de-initialization function							@@@@@@@@@@@@@@@@@@              @@@@@@@@@@@@@@@@
++ Peripheral Control functions									@ @@@@@@@@@@@@@@                  @@@@@@@@@@@@@@
 												@@  @@@@@@@@@                  @@@@@@@@@@@@@@@@@
 												@@@@  @@@    @@@@@@@&         .@@@@@@@@@@@@@@@@@
 												@@@@@@@#   ###@@@@( @        &@@@@@@@@@@@@@@@@@@
