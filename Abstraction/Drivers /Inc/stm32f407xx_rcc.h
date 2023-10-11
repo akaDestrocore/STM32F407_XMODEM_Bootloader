@@ -219,7 +219,7 @@ void RCC_ClockConfig(RCC_ClkInit_t  *pRCC_Clk);
 /* Peripheral Control functions  ************************************************/
 uint32_t RCC_GetPLLOutputClock(void);
 uint32_t RCC_GetSysClockFreq(void);
-//void     RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_MCODiv);	//TODO
+void     RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_MCODiv);
 void     RCC_EnableCSS(void);
 void     RCC_DisableCSS(void);
 uint32_t RCC_GetHCLKFreq(void);
