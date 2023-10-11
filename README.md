@@ -16,7 +16,7 @@ Install latest **[Tera Term version](https://github.com/TeraTermProject/osdn-dow
 
 ## Features
 
-- There are two versions of the project. One is Abstract and the other one is register only. The difference between them is only the initialization functions that are register based and doesn't use any additional driver in register based version. There are no other differences than that.
+- There are two versions of the project. One is Abstraction and the other one is register only. The difference between them is only the initialization functions that are register based and doesn't use any additional driver in register based version. There are no other differences than that.
 - It is designed that way that user has to hold user button while resetting the device. After that bootloader will ask for a binary file of a firmware. Firmware version control is supported. There are blinky firmware example binaries of different versions included in the repo.
 - Firmware is copied to device completely before booting. This is provided in order to avoid situations when there are errors while writing to flash memory is in progress. 
 
