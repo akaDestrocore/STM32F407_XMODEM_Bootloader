@@ -986,7 +986,7 @@ void SystemClock_Config(void)
 
 	// Set flash latency based on new system clock frequency
 	FLASH->ACR.bit.latency = 0x5U; //5WS for 150 < HCLK ≤ 168
-	while(!(FLASH->ACR.bit.latency = 0x5U))
+	while(!(0x5U == FLASH->ACR.bit.latency))
 	{
 
 	}
