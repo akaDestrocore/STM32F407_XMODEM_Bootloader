@@ -9,10 +9,10 @@ This project provides a firmware bootloader for STM32, supporting the **XMODEM**
 
 ### Key Components
 The firmware update architecture consists of the following components:
-- **[BOOT](https://git.gumush.com.tr/mykola/STM32_Patching_Bootloader/src/branch/main#boot):** A minimal software whose sole purpose is to load the LOADER. If the LOADER is invalid, it falls back to another application.
-- **[APP_LOADER](https://git.gumush.com.tr/mykola/STM32_Patching_Bootloader/src/branch/main#app_loader):** Validates and loads the application image or redirects to the UPDATER if the application is invalid.
-- **[SLOT_2_APPLICATION](https://git.gumush.com.tr/mykola/STM32_Patching_Bootloader/src/branch/main#uygulama):** The main application code, which does not perform updates.
-- **[UPDATER](https://git.gumush.com.tr/mykola/STM32_Patching_Bootloader/src/branch/main#updater):** Updates the main application and performs related operations.
+- **BOOT:** A minimal software whose sole purpose is to load the LOADER. If the LOADER is invalid, it falls back to another application.
+- **APP_LOADER:** Validates and loads the application image or redirects to the UPDATER if the application is invalid.
+- **SLOT_2_APPLICATION:** The main application code, which does not perform updates.
+- **UPDATER:** Updates the main application and performs related operations.
 
 ### Architecture Diagram
 
