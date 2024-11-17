@@ -1,0 +1,55 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "YES"
+      }
+    },
+    {
+      "name": "Debug",
+      "inherits": "default",
+      "description": "Build with Debug configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "Test-Debug",
+      "inherits": "default",
+      "description": "Build with Test-Debug configuration",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Test-Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "configurePreset": "default",
+      "jobs": 4
+    },
+    {
+      "name": "Debug",
+      "inherits": "default",
+      "description": "Build using Debug configuration",
+      "configurePreset": "Debug"
+    },
+    {
+      "name": "Test-Debug",
+      "inherits": "default",
+      "description": "Build using Test-Debug configuration",
+      "configurePreset": "Test-Debug"
+    }
+  ]
+}
