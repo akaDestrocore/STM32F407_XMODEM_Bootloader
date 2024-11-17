@@ -1,0 +1,24 @@
+{
+    "files.associations": {
+        "cstdint": "c",
+        "stm32f4xx_it.h": "c",
+        "main.h": "c",
+        "updater_flash.h": "c",
+        "string.h": "c",
+        "ring_buffer.h": "c",
+        "janpatch.h": "c",
+        "simple_fileio.h": "c",
+        "nanoprintf.h": "c",
+        "uart_log.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "math.h": "c",
+        "image.h": "c",
+        "stm32f4xx_ll_gpio.h": "c",
+        "command_handler.h": "c",
+        "stm32f4xx_ll_usart.h": "c",
+        "gcm.h": "c",
+        "xmodem.h": "c",
+        "stm32f4xx_ll_utils.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": false
+}

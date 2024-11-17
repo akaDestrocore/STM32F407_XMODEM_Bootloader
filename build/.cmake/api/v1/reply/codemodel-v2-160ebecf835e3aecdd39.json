@@ -1,0 +1,114 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "stm32f4_bootloader",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "app_debug::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-app_debug-Debug-5e0b693d4365ae62a72f.json",
+					"name" : "app_debug",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "boot_debug::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-boot_debug-Debug-6bc188e859ecfbc5ed85.json",
+					"name" : "boot_debug",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "flash_full::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-flash_full-Debug-1e2b8ed63b62e8ed8782.json",
+					"name" : "flash_full",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "loader_debug::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-loader_debug-Debug-5ec45610ee8ca3c293dc.json",
+					"name" : "loader_debug",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "memory_analysis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-memory_analysis-Debug-9dcb541549963777e75c.json",
+					"name" : "memory_analysis",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "patch_and_merge::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-patch_and_merge-Debug-60fb9157ee0bfaa20ef1.json",
+					"name" : "patch_and_merge",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "updater_debug::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-updater_debug-Debug-5d607f39897a05262805.json",
+					"name" : "updater_debug",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build",
+		"source" : "/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

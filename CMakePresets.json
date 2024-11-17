@@ -1,0 +1,105 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 22,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake"
+      }
+    },
+    {
+      "name": "Debug",
+      "inherits": "default",
+      "description": "Debug build for STM32F4 bootloader",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "Release",
+      "inherits": "default",
+      "description": "Release build for STM32F4 bootloader",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "configurePreset": "default",
+      "jobs": 4
+    },
+    {
+      "name": "Debug",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Build all components in Debug mode"
+    },
+    {
+      "name": "Release",
+      "inherits": "default",
+      "configurePreset": "Release",
+      "description": "Build all components in Release mode"
+    },
+    {
+      "name": "Boot-Debug",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Build boot component in Debug mode",
+      "targets": ["boot"]
+    },
+    {
+      "name": "Loader-Debug",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Build loader component in Debug mode",
+      "targets": ["loader"]
+    },
+    {
+      "name": "Boot-Release",
+      "inherits": "default",
+      "configurePreset": "Release",
+      "description": "Build boot component in Release mode",
+      "targets": ["boot"]
+    },
+    {
+      "name": "Loader-Release",
+      "inherits": "default",
+      "configurePreset": "Release",
+      "description": "Build loader component in Release mode",
+      "targets": ["loader"]
+    },
+    {
+      "name": "Flash-Boot",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Build and flash boot component",
+      "targets": ["flash_boot"]
+    },
+    {
+      "name": "Debug-Merge",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Build and merge components for debug",
+      "targets": ["debug_merge"]
+    },
+    {
+      "name": "Flash-Debug",
+      "inherits": "default",
+      "configurePreset": "Debug",
+      "description": "Flash merged debug image",
+      "targets": ["flash_debug"]
+    }
+  ]
+}
