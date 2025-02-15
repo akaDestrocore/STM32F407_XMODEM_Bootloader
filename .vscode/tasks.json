@@ -1,0 +1,89 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "flash",
+            "dependsOn": "CMake: clean rebuild",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "-c",
+                "port=swd",
+                "mode=UR",
+                "-d",
+                "${workspaceFolder}/build/merged_firmware.bin",
+                "0x08000000",
+                "-v",
+                "-hardRst"
+            ],
+            "problemMatcher": "$gcc",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "shell",
+            "label": "flash_bootloader",
+            "dependsOn": "CMake: clean rebuild",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "-c",
+                "port=swd",
+                "mode=UR",
+                "-d",
+                "${workspaceFolder}/build/boot_debug.bin",
+                "0x08000000",
+                "-v",
+                "-hardRst"
+            ],
+            "problemMatcher": "$gcc",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "config",
+            "type": "cmake",
+            "command": "configure",
+            "problemMatcher": []
+        },
+        {
+            "type": "cmake",
+            "label": "CMake: clean rebuild",
+            "command": "cleanRebuild",
+            "targets": [
+                "all"
+            ],
+            "group": "build",
+            "problemMatcher": "$gcc",
+            "detail": "CMake clean rebuild task"
+        },
+        {
+            "type": "cmake",
+            "label": "CMake: build",
+            "command": "build",
+            "targets": [
+                "all"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "CMake build task"
+        },
+        {
+            "type": "shell",
+            "label": "check programmer",
+            "command": "STM32_Programmer_CLI",
+            "args": [
+                "--list"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

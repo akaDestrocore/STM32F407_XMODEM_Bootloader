@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "cstdint": "c",
+        "stm32f4xx_it.h": "c",
+        "main.h": "c",
+        "updater_flash.h": "c",
+        "string.h": "c",
+        "ring_buffer.h": "c",
+        "janpatch.h": "c",
+        "simple_fileio.h": "c",
+        "nanoprintf.h": "c",
+        "uart_log.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "math.h": "c"
+    }
+}
