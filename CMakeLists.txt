@@ -205,6 +205,7 @@ target_sources(loader_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/ring_buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/bootloader.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/crc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/flash.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/image.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/ring_buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
@@ -233,6 +234,7 @@ target_sources(updater_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/ring_buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/bootloader.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/crc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/flash.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/image.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/ring_buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
@@ -250,6 +252,7 @@ target_sources(app_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/drivers/${MCU_FAMILY}_HAL_Driver/Src/stm32f4xx_ll_crc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/drivers/${MCU_FAMILY}_HAL_Driver/Src/stm32f4xx_ll_gpio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/drivers/${MCU_FAMILY}_HAL_Driver/Src/stm32f4xx_ll_utils.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/flash.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/ring_buffer.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/uart_transport.c

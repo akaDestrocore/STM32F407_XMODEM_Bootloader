@@ -3,6 +3,7 @@
 
 #include "stm32f4xx_ll_usart.h"
 #include "transport.h"
+#include "xmodem.h"
 #include "ring_buffer.h"
 #include <string.h>
 
@@ -47,6 +48,8 @@ int uart_transport_deinit(void);
 // Start XMODEM receive
 int uart_transport_xmodem_receive(uint32_t target_addr);
 
+// Get XMODEM state
+XmodemState_t uart_transport_xmodem_state(void);
 
 // Access to buffers for IRQ handler
 RingBuffer_t* get_uart_rx_buffer(void);

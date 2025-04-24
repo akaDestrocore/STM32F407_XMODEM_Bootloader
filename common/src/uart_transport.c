@@ -9,6 +9,7 @@
 // UART transport state
 typedef struct {
     UARTTransport_Config_t* config;
+    XmodemManager_t xmodem;
     RingBuffer_t tx_buffer;
     RingBuffer_t rx_buffer;
     uint8_t receive_mode;
@@ -136,7 +137,7 @@ int uart_transport_process(void) {
         
         // Process any bytes in the RX buffer
         while (ring_buffer_read(&uart_state.rx_buffer, &byte)) {
-
+            
         }
     }
     
@@ -156,20 +157,6 @@ int uart_transport_deinit(void) {
     
     // Disable UART
     LL_USART_Disable(uart_state.config->usart);
-    
-    return 0;
-}
-
-// Start XMODEM receive
-int uart_transport_xmodem_receive(uint32_t target_addr) {
-    if (!uart_state.config->use_xmodem) {
-        return -1;
-    }
-    
-    // Clear RX buffer
-    ring_buffer_clear(&uart_state.rx_buffer);
-    
-    uart_state.receive_mode = 1;
     
     return 0;
 }

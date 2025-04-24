@@ -17,8 +17,7 @@
         "command_handler.h": "c",
         "stm32f4xx_ll_usart.h": "c",
         "gcm.h": "c",
-        "xmodem.h": "c",
-        "stm32f4xx_ll_utils.h": "c"
+        "xmodem.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

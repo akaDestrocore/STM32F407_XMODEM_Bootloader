@@ -1,9 +1,0 @@
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/boot_debug.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/loader_debug.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/updater_debug.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/app_debug.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/patch_and_merge.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/flash_full.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/memory_analysis.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/edit_cache.dir
-/home/destrocore/VS_WORKSPACE/STM32F407_XMODEM_Bootloader/build/CMakeFiles/rebuild_cache.dir

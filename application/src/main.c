@@ -260,37 +260,6 @@ int main(void) {
 }
 
 /**
-  * @brief  Converts an integer to a string
-  * @param  value: Value to convert
-  * @retval Pointer to the string representation
-  */
-static char* itoa(uint32_t value) {
-    static char buffer[16];
-    
-    if (value == 0) {
-        buffer[0] = '0';
-        buffer[1] = '\0';
-        return buffer;
-    }
-    
-    int i = 0;
-    while (value > 0 && i < 15) {
-        buffer[i++] = '0' + (value % 10);
-        value /= 10;
-    }
-    
-    /* Reverse the string */
-    for (int j = 0; j < i/2; j++) {
-        char temp = buffer[j];
-        buffer[j] = buffer[i-j-1];
-        buffer[i-j-1] = temp;
-    }
-    
-    buffer[i] = '\0';
-    return buffer;
-}
-
-/**
   * @brief  Clears the screen using ANSI escape codes
   * @retval None
   */
