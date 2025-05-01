@@ -23,24 +23,25 @@ typedef struct __attribute__((packed)) {
     uint32_t image_magic;        // Magic number (component-specific)
     uint16_t image_hdr_version;  // Header version
     uint8_t  image_type;         // Type of image
+    uint8_t  is_patch;           // Flag indicating if this is a delta patch (1) or full image (0)
     uint8_t  version_major;      // Major version number
     uint8_t  version_minor;      // Minor version number
     uint8_t  version_patch;      // Patch version number
-    uint16_t _padding;           // Padding for alignment
+    uint8_t  _padding;           // Padding for alignment
     uint32_t vector_addr;        // Address of the vector table
     uint32_t crc;                // CRC of the image (excluding header)
     uint32_t data_size;          // Size of the image data
 } ImageHeader_Packet_t;
 
-// Image header struct with reserved space for full flash storage
 typedef struct __attribute__((packed)) {
     uint32_t image_magic;        // Magic number (component-specific)
     uint16_t image_hdr_version;  // Header version
     uint8_t  image_type;         // Type of image
+    uint8_t  is_patch;           // Flag indicating if this is a delta patch or full image
     uint8_t  version_major;      // Major version number
     uint8_t  version_minor;      // Minor version number
     uint8_t  version_patch;      // Patch version number
-    uint16_t _padding;           // Padding for alignment
+    uint8_t  _padding;           // Padding for alignment
     uint32_t vector_addr;        // Address of the vector table
     uint32_t crc;                // CRC of the image (excluding header)
     uint32_t data_size;          // Size of the image data
