@@ -10,8 +10,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Memory Spaces Definitions */
 MEMORY
 {
-  FLASH_HDR (rx) : ORIGIN = 0x08002000, LENGTH = 0x200   /* 512 bytes for header */
-  FLASH (rx)     : ORIGIN = 0x08002200, LENGTH = 52K - 0x200  /* Remaining space for code */
+  FLASH_HDR (rx) : ORIGIN = 0x08004000, LENGTH = 0x200
+  FLASH (rx)     : ORIGIN = 0x08004200, LENGTH = 48K - 0x200
   RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
   CCMRAM (rw)    : ORIGIN = 0x10000000, LENGTH = 64K
 }
