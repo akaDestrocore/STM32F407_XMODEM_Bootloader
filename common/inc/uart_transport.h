@@ -9,7 +9,7 @@
 
 // UART transport configuration
 typedef struct {
-    USART_TypeDef* usart;  // Changed from UART_HandleTypeDef* huart
+    USART_TypeDef* usart;
     uint32_t baudrate;
     uint32_t timeout;
     uint8_t use_xmodem;

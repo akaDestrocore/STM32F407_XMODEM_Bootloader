@@ -46,7 +46,6 @@ void update_header_vector_addr(ImageHeader_t* header, uint32_t addr) {
     header->vector_addr = addr;
 }
 
-// New functions for packet header operations
 int is_image_valid_packet(const ImageHeader_Packet_t* header) {
     switch (header->image_type) {
         case IMAGE_TYPE_LOADER:

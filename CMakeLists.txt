@@ -155,10 +155,6 @@ target_include_directories(boot_debug PRIVATE
 target_include_directories(loader_debug PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/loader/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/common/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/MBEDTLS/App
-    ${CMAKE_CURRENT_SOURCE_DIR}/drivers/ThirdParty/mbedTLS/include/mbedtls
-    ${CMAKE_CURRENT_SOURCE_DIR}/drivers/ThirdParty/mbedTLS/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/drivers/ThirdParty/JANPATCH
 )
 target_include_directories(updater_debug PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/updater/inc
@@ -191,6 +187,7 @@ target_sources(boot_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/boot/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/boot/src/system_stm32f4xx.c
 )
+
 
 target_sources(loader_debug PRIVATE
     ${LOADER_STARTUP_FILE}
