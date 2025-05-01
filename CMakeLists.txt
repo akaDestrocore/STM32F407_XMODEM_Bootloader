@@ -237,6 +237,8 @@ target_sources(updater_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/uart_transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/syscalls.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/xmodem.c
+    ${MBEDTLS_SOURCES}
 )
 
 target_sources(app_debug PRIVATE
