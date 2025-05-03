@@ -68,6 +68,18 @@ int uart_transport_init(void* config) {
     NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
     NVIC_EnableIRQ(USART2_IRQn);
     
+    // Initialize XMODEM if needed
+    if (uart_config->use_xmodem) {
+        XmodemConfig_t xmodem_config = {
+            .app_addr = uart_config->app_addr,
+            .updater_addr = uart_config->updater_addr,
+            .loader_addr = uart_config->loader_addr,
+            .image_hdr_size = uart_config->image_hdr_size
+        };
+        
+        xmodem_init(&uart_state.xmodem, &xmodem_config);
+    }
+    
     uart_state.receive_mode = 0;
     
     return 0;
@@ -137,7 +149,33 @@ int uart_transport_process(void) {
         
         // Process any bytes in the RX buffer
         while (ring_buffer_read(&uart_state.rx_buffer, &byte)) {
+            XmodemError_t result = xmodem_process_byte(&uart_state.xmodem, byte);
             
+            // Handle XMODEM response
+            if (xmodem_should_send_byte(&uart_state.xmodem)) {
+                uint8_t response = xmodem_get_response(&uart_state.xmodem);
+                uart_transport_send(&response, 1);
+            }
+            
+            // Check transfer status
+            if (result == XMODEM_ERROR_TRANSFER_COMPLETE) {
+                uart_state.receive_mode = 0;
+                return 1; // Success
+            } else if (result != XMODEM_ERROR_NONE) {
+                // Any error other than NONE indicates transfer issues
+                if (result != XMODEM_ERROR_CRC_ERROR && 
+                    result != XMODEM_ERROR_SEQUENCE_ERROR) {
+                    uart_state.receive_mode = 0;
+                    return -1; // Error
+                }
+            }
+            
+            // Check state
+            XmodemState_t state = xmodem_get_state(&uart_state.xmodem);
+            if (state == XMODEM_STATE_COMPLETE || state == XMODEM_STATE_ERROR) {
+                uart_state.receive_mode = 0;
+                return (state == XMODEM_STATE_COMPLETE) ? 1 : -1;
+            }
         }
     }
     
@@ -159,6 +197,26 @@ int uart_transport_deinit(void) {
     LL_USART_Disable(uart_state.config->usart);
     
     return 0;
+}
+
+// Start XMODEM receive
+int uart_transport_xmodem_receive(uint32_t target_addr) {
+    if (!uart_state.config->use_xmodem) {
+        return -1;
+    }
+    
+    // Clear RX buffer
+    ring_buffer_clear(&uart_state.rx_buffer);
+    
+    xmodem_start(&uart_state.xmodem, target_addr);
+    uart_state.receive_mode = 1;
+    
+    return 0;
+}
+
+// Get XMODEM state
+XmodemState_t uart_transport_xmodem_state(void) {
+    return xmodem_get_state(&uart_state.xmodem);
 }
 
 void uart_transport_irq_handler(void) {
