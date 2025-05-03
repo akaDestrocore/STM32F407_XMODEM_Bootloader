@@ -18,6 +18,7 @@ __attribute__((section(".image_hdr"))) ImageHeader_t IMAGE_HEADER = {
   .image_magic = IMAGE_MAGIC_APP,
   .image_hdr_version = IMAGE_VERSION_CURRENT,
   .image_type = IMAGE_TYPE_APP,
+  .is_patch = 0,
   .version_major = 1,
   .version_minor = 0,
   .version_patch = 0,

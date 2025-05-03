@@ -208,6 +208,7 @@ target_sources(loader_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/uart_transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/syscalls.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/xmodem.c
 )
 
 file(GLOB_RECURSE MBEDTLS_SOURCES
@@ -256,6 +257,7 @@ target_sources(app_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/uart_transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/syscalls.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/xmodem.c
 )
 
 # Post-build commands for all targets
@@ -296,7 +298,7 @@ VERBATIM
 )
 
 add_custom_target(flash_full
-    DEPENDS build_firmware
+    DEPENDS patch_and_merge
     COMMAND STM32_Programmer_CLI -c port=swd mode=UR -d ${CMAKE_BINARY_DIR}/merged_firmware.bin 0x08000000 -v -hardRst
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Flashing merged firmware"
