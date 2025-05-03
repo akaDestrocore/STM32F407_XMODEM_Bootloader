@@ -5,7 +5,6 @@ import struct
 import binascii
 import sys
 
-# Constants matching the C implementation
 IMAGE_MAGIC_LOADER = 0xDEADC0DE
 IMAGE_MAGIC_UPDATER = 0xFEEDFACE
 IMAGE_MAGIC_APP = 0xC0FFEE00
@@ -15,14 +14,13 @@ IMAGE_TYPE_LOADER = 1
 IMAGE_TYPE_UPDATER = 2
 IMAGE_TYPE_APP = 3
 
+LOADER_ADDR = 0x08004000
+UPDATER_ADDR = 0x08010000
+APP_ADDR = 0x08020000
+
 HEADER_SIZE = 0x200
 
-# Memory map offsets from base address 0x08000000
-LOADER_ADDR = 0x08002000
-UPDATER_ADDR = 0x0800F000
-APP_ADDR = 0x0801C000
-
-# CRC32 calculation using the same algorithm as STM32 hardware CRC
+# CRC32
 def calculate_crc32(data):
     crc = 0xFFFFFFFF
     
@@ -42,7 +40,6 @@ def calculate_crc32(data):
     return crc
 
 def is_header_present(data):
-    """Check if the binary data already contains a header by looking for magic numbers"""
     if len(data) < 4:
         return False
     
@@ -50,89 +47,110 @@ def is_header_present(data):
     return magic in [IMAGE_MAGIC_LOADER, IMAGE_MAGIC_UPDATER, IMAGE_MAGIC_APP]
 
 def extract_header_fields(header_data):
-    """Extract fields from binary header data"""
-    if len(header_data) < HEADER_SIZE:
+    if len(header_data) < 24:  # We need at least 24 bytes for the header
+        print(f"Header data too short: {len(header_data)} bytes")
         return None
     
-    # Unpack header fields from binary data - the struct size is 24 bytes
-    header_fields = struct.unpack('<LHBBBBHLLL', header_data[0:24])
+    # Print the first 24 bytes for debugging
+    print("Header bytes:", ' '.join(f'{b:02x}' for b in header_data[:24]))
     
+    # Extract individual fields by slicing
+    magic = int.from_bytes(header_data[0:4], byteorder='little')
+    hdr_version = int.from_bytes(header_data[4:6], byteorder='little')
+    image_type = header_data[6]
+    is_patch = header_data[7]
+    version_major = header_data[8]
+    version_minor = header_data[9]
+    version_patch = header_data[10]
+    padding = header_data[11]
+    vector_addr = int.from_bytes(header_data[12:16], byteorder='little')
+    crc = int.from_bytes(header_data[16:20], byteorder='little')
+    data_size = int.from_bytes(header_data[20:24], byteorder='little')
+    
+    # Create header dictionary
     header = {
-        'magic': header_fields[0],
-        'image_hdr_version': header_fields[1],
-        'image_type': header_fields[2],
-        'version_major': header_fields[3],
-        'version_minor': header_fields[4],
-        'version_patch': header_fields[5],
-        '_padding': header_fields[6],
-        'vector_addr': header_fields[7],
-        'crc': header_fields[8],
-        'data_size': header_fields[9]
+        'magic': magic,
+        'image_hdr_version': hdr_version,
+        'image_type': image_type,
+        'is_patch': is_patch,
+        'version_major': version_major,
+        'version_minor': version_minor,
+        'version_patch': version_patch,
+        '_padding': padding,
+        'vector_addr': vector_addr,
+        'crc': crc,
+        'data_size': data_size
     }
     
+    print(f"Successfully extracted header: magic=0x{magic:08X}, type={image_type}, is_patch={is_patch}")
     return header
 
 def create_updated_header(header_dict, image_data, base_addr):
-    """Create binary header based on header dict and image data"""
-    # Calculate CRC on the actual data
+    # Calculate CRC
     crc = calculate_crc32(image_data)
     data_size = len(image_data)
     
-    # Update header fields
+    # Update header
     header_dict['crc'] = crc
     header_dict['data_size'] = data_size
     header_dict['vector_addr'] = base_addr + HEADER_SIZE
     
     # Create binary header
-    header = struct.pack('<LHBBBBHLLL',
-                         header_dict['magic'],
-                         header_dict['image_hdr_version'],
-                         header_dict['image_type'],
-                         header_dict['version_major'],
-                         header_dict['version_minor'],
-                         header_dict['version_patch'],
-                         header_dict['_padding'],
-                         header_dict['vector_addr'],
-                         header_dict['crc'],
-                         header_dict['data_size'])
+    header = bytearray(24)
+    
+    # Write fields in little-endian format
+    header[0:4] = header_dict['magic'].to_bytes(4, byteorder='little')
+    header[4:6] = header_dict['image_hdr_version'].to_bytes(2, byteorder='little')
+    header[6] = header_dict['image_type']
+    header[7] = header_dict['is_patch']
+    header[8] = header_dict['version_major']
+    header[9] = header_dict['version_minor']
+    header[10] = header_dict['version_patch']
+    header[11] = header_dict['_padding']
+    header[12:16] = header_dict['vector_addr'].to_bytes(4, byteorder='little')
+    header[16:20] = header_dict['crc'].to_bytes(4, byteorder='little')
+    header[20:24] = header_dict['data_size'].to_bytes(4, byteorder='little')
     
     # Pad the header to HEADER_SIZE bytes
     header += b'\x00' * (HEADER_SIZE - len(header))
     
-    return header
+    return bytes(header)
 
-def create_new_header(image_type, magic, version, vector_addr, data):
-    """Create a binary header structure from scratch"""
+def create_new_header(image_type, magic, version, vector_addr, data, is_patch=False):
     version_major, version_minor, version_patch = version
     
     # Calculate CRC on the actual data
     crc = calculate_crc32(data)
     data_size = len(data)
     
-    # Create header structure
-    header = struct.pack('<LHBBBBHLLL',
-                         magic,                    # image_magic (4 bytes)
-                         IMAGE_VERSION_CURRENT,    # image_hdr_version (2 bytes)
-                         image_type,               # image_type (1 byte)
-                         version_major,            # version_major (1 byte)
-                         version_minor,            # version_minor (1 byte)
-                         version_patch,            # version_patch (1 byte)
-                         0,                        # _padding (2 bytes)
-                         vector_addr,              # vector_addr (4 bytes)
-                         crc,                      # crc (4 bytes)
-                         data_size)                # data_size (4 bytes)
+    # Create binary header
+    header = bytearray(24)
+    
+    # Write fields in little-endian format
+    header[0:4] = magic.to_bytes(4, byteorder='little')
+    header[4:6] = IMAGE_VERSION_CURRENT.to_bytes(2, byteorder='little')
+    header[6] = image_type
+    header[7] = 1 if is_patch else 0
+    header[8] = version_major
+    header[9] = version_minor
+    header[10] = version_patch
+    header[11] = 0  # _padding
+    header[12:16] = vector_addr.to_bytes(4, byteorder='little')
+    header[16:20] = crc.to_bytes(4, byteorder='little')
+    header[20:24] = data_size.to_bytes(4, byteorder='little')
     
     # Pad the header to HEADER_SIZE bytes
     header += b'\x00' * (HEADER_SIZE - len(header))
     
     print(f"Header created for {image_type_to_str(image_type)}:")
     print(f"  - Magic: 0x{magic:08X}")
+    print(f"  - Is Patch: {'Yes' if is_patch else 'No'}")
     print(f"  - Version: {version_major}.{version_minor}.{version_patch}")
     print(f"  - Vector Address: 0x{vector_addr:08X}")
     print(f"  - Data Size: {data_size} bytes")
     print(f"  - CRC32: 0x{crc:08X}")
     
-    return header
+    return bytes(header)
 
 def image_type_to_str(image_type):
     if image_type == IMAGE_TYPE_LOADER:
@@ -144,9 +162,7 @@ def image_type_to_str(image_type):
     else:
         return "Unknown"
 
-def patch_binary(filename, image_type, version, base_addr):
-    """Patch a binary with a proper header or update existing header"""
-    # Read the binary data
+def patch_binary(filename, image_type, version, base_addr, is_patch=False):
     with open(filename, 'rb') as f:
         binary_data = f.read()
     
@@ -179,29 +195,33 @@ def patch_binary(filename, image_type, version, base_addr):
         existing_header_data = binary_data[:HEADER_SIZE]
         image_data = binary_data[HEADER_SIZE:]
         
-        # Parse header fields
+        # Parse header
         header_dict = extract_header_fields(existing_header_data)
         
         if header_dict:
-            # Update header with new CRC, size and vector address
+            # Update is_patch flag
+            header_dict['is_patch'] = 1 if is_patch else 0
+            
+            # Update header with new CRC, size and vector
             updated_header = create_updated_header(header_dict, image_data, base_addr)
             print(f"Updated existing header for {image_type_to_str(image_type)}:")
             print(f"  - Magic: 0x{header_dict['magic']:08X}")
+            print(f"  - Is Patch: {'Yes' if header_dict['is_patch'] else 'No'}")
             print(f"  - Version: {header_dict['version_major']}.{header_dict['version_minor']}.{header_dict['version_patch']}")
             print(f"  - Vector Address: 0x{header_dict['vector_addr']:08X}")
             print(f"  - Data Size: {header_dict['data_size']} bytes")
             print(f"  - CRC32: 0x{header_dict['crc']:08X}")
         else:
-            # Couldn't parse header, create a new one
+            # Create a new header if couldn't parse
             print(f"Couldn't parse existing header, creating new one...")
             vector_addr = base_addr + HEADER_SIZE
-            updated_header = create_new_header(image_type, magic, version, vector_addr, image_data)
+            updated_header = create_new_header(image_type, magic, version, vector_addr, image_data, is_patch)
     else:
-        # No header found, create a new one
+        # No header found - create a new one
         print(f"No header found in {filename}, creating new one...")
         vector_addr = base_addr + HEADER_SIZE
         image_data = binary_data
-        updated_header = create_new_header(image_type, magic, version, vector_addr, image_data)
+        updated_header = create_new_header(image_type, magic, version, vector_addr, image_data, is_patch)
     
     # Write the patched binary (header + data)
     output_filename = os.path.splitext(filename)[0] + "_patched.bin"
@@ -213,11 +233,10 @@ def patch_binary(filename, image_type, version, base_addr):
     return output_filename
 
 def merge_binaries(boot_filename, loader_filename, updater_filename, app_filename, output_filename="merged_firmware.bin"):
-    """Merge multiple binaries into a single flash image"""
     # Memory map offsets from base address 0x08000000
-    LOADER_OFFSET = 0x2000 
-    UPDATER_OFFSET = 0xF000
-    APP_OFFSET = 0x1C000  
+    LOADER_OFFSET = 0x4000 
+    UPDATER_OFFSET = 0x10000
+    APP_OFFSET = 0x20000  
 
     # Get file sizes
     boot_size = os.stat(boot_filename).st_size
@@ -268,16 +287,10 @@ def merge_binaries(boot_filename, loader_filename, updater_filename, app_filenam
 
 def main():
     parser = argparse.ArgumentParser(description="STM32F4 Bootloader Image Management Tool")
-    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+    parser.add_argument("--key", help="AES-128 key in hex format (32 characters)", default=None)
+    parser.add_argument("--aad", help="Additional Authenticated Data in hex format", default=None)
     
-    # Patch command
-    patch_parser = subparsers.add_parser("patch", help="Patch a binary with header information")
-    patch_parser.add_argument("filename", help="Binary file to patch")
-    patch_parser.add_argument("--type", type=int, required=True, choices=[1, 2, 3], 
-                             help="Image type: 1=Loader, 2=Updater, 3=Application")
-    patch_parser.add_argument("--version", required=True, help="Version in format 'major.minor.patch'")
-    patch_parser.add_argument("--base-addr", type=lambda x: int(x, 0), 
-                             help="Base address override (default: determined by type)")
+    subparsers = parser.add_subparsers(dest="command", help="Command to execute")
     
     # Merge command
     merge_parser = subparsers.add_parser("merge", help="Merge multiple binaries into a single image")
@@ -287,7 +300,7 @@ def main():
     merge_parser.add_argument("app", help="Application binary file")
     merge_parser.add_argument("--output", help="Output filename (default: merged_firmware.bin)")
     
-    # Build command - patch and merge in one step
+    # Patch and merge in one step
     build_parser = subparsers.add_parser("build", help="Patch all binaries and merge into a single image")
     build_parser.add_argument("boot", help="Boot binary file")
     build_parser.add_argument("loader", help="Loader binary file")
@@ -296,6 +309,7 @@ def main():
     build_parser.add_argument("--loader-version", default="1.0.0", help="Loader version (default: 1.0.0)")
     build_parser.add_argument("--updater-version", default="1.0.0", help="Updater version (default: 1.0.0)")
     build_parser.add_argument("--app-version", default="1.0.0", help="Application version (default: 1.0.0)")
+    build_parser.add_argument("--app-is-patch", action="store_true", help="Flag to indicate app is a delta patch")
     build_parser.add_argument("--output", help="Output filename (default: merged_firmware.bin)")
     
     args = parser.parse_args()
@@ -310,7 +324,7 @@ def main():
         except ValueError:
             parser.error("Version components must be integers")
             
-        patch_binary(args.filename, args.type, version, args.base_addr)
+        patch_binary(args.filename, args.type, version, args.base_addr, args.is_patch)
         
     elif args.command == "merge":
         output = merge_binaries(args.boot, args.loader, args.updater, args.app)
@@ -341,7 +355,7 @@ def main():
         updater_patched = patch_binary(args.updater, IMAGE_TYPE_UPDATER, updater_version, UPDATER_ADDR)
         
         print("\n=== Patching Application ===")
-        app_patched = patch_binary(args.app, IMAGE_TYPE_APP, app_version, APP_ADDR)
+        app_patched = patch_binary(args.app, IMAGE_TYPE_APP, app_version, APP_ADDR, args.app_is_patch)
         
         # Merge patched binaries
         print("\n=== Merging Binaries ===")
