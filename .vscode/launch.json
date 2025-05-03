@@ -43,7 +43,7 @@
             "type": "cortex-debug",
             "request": "attach",
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceFolder}/build/loader_debug.elf",
+            "executable": "${workspaceFolder}/build/updater_debug.elf",
             "servertype": "stlink",
             "device": "STM32F407VGTx",
             "interface": "swd",

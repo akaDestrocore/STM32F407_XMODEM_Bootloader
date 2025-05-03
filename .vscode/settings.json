@@ -17,7 +17,20 @@
         "command_handler.h": "c",
         "stm32f4xx_ll_usart.h": "c",
         "gcm.h": "c",
-        "xmodem.h": "c"
+        "xmodem.h": "c",
+        "uart_transport.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "delta_update.h": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "stm32f4xx_ll_rcc.h": "c",
+        "stdint.h": "c",
+        "transport.h": "c",
+        "bootloader.h": "c",
+        "flash.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": false
 }

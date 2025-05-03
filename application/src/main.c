@@ -33,7 +33,6 @@ static void MX_GPIO_Init(void);
 static void setup_leds(void);
 static void clear_screen(void);
 static void delay_ms(uint32_t ms);
-static char* itoa(uint32_t value);
 
 /* Animation frames for serial terminal */
 static const char* FRAMES[] = {
