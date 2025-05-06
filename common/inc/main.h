@@ -30,13 +30,12 @@ void Error_Handler(void);
 #define BLUE_Pin GPIO_PIN_15
 #define BLUE_GPIO_Port GPIOD
 
-#define BOOTLOADER					((uint32_t)0x08000000U)				
-#define LOADER_ADDR 		    ((uint32_t)0x08002000U)				
-#define UPDATER_ADDR				((uint32_t)0x0800F000U)				
-#define SLOT_2_APP_ADDR	    ((uint32_t)0x0801C200U)				
-#define APP_ADDR				    ((uint32_t)0x0801C000U)
-#define BACKUP_ADDR					((uint32_t)0x08060000U)				
-#define PATCH_ADDR					((uint32_t)0x080C0000U)
+#define BOOTLOADER          ((uint32_t)0x08000000U)
+#define LOADER_ADDR         ((uint32_t)0x08004000U)
+#define UPDATER_ADDR        ((uint32_t)0x08010000U)
+#define APP_ADDR            ((uint32_t)0x08020000U)
+#define BACKUP_ADDR         ((uint32_t)0x08080000U)
+#define PATCH_ADDR          ((uint32_t)0x080C0000U)
 #define IMAGE_HDR_SIZE      0x200
 
 /* USER CODE END Private defines */
