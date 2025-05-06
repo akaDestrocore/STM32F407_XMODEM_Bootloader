@@ -295,7 +295,7 @@ add_custom_target(patch_and_merge ALL
     --updater-version 1.0.0 
     --app-version 1.0.0 
     --output ${CMAKE_BINARY_DIR}/merged_firmware.bin
-WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Building firmware with headers and merging components"
     VERBATIM
 )
