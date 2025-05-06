@@ -8,6 +8,11 @@
 #include <stddef.h>
 #include <string.h>
 
+
+#ifdef FIRMWARE_ENCRYPTED
+#include <mbedtls/gcm.h>
+#endif
+
 #ifndef PATCH_ADDR
     #define PATCH_ADDR          ((uint32_t)0x080C0000U)
 #endif
@@ -84,6 +89,16 @@ typedef struct {
     XmodemConfig_t config;
     uint8_t use_encryption;
     uint8_t is_patch;
+    
+#ifdef FIRMWARE_ENCRYPTED
+    mbedtls_gcm_context aes;
+    uint8_t nonce_counter[12];
+    uint8_t tag[16];
+    uint8_t decrypted_buffer[128];
+    uint8_t gcm_initialized;
+    uint32_t remaining_size;
+    uint8_t tag_received;
+#endif
 } XmodemManager_t;
 
 // Initialize XMODEM manager struct

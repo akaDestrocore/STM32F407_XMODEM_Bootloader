@@ -132,6 +132,7 @@ function(configure_target target)
     elseif(${target} STREQUAL "updater_debug")
         target_compile_definitions(${target} PRIVATE 
             "P_UPDATER"
+            "FIRMWARE_ENCRYPTED"
             "MBEDTLS_CONFIG_FILE=<mbedtls_config.h>"
         )
     elseif(${target} STREQUAL "app_debug")
