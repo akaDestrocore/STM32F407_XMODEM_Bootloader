@@ -84,6 +84,7 @@ void header_to_packet(const ImageHeader_t* header, ImageHeader_Packet_t* packet)
     packet->image_magic = header->image_magic;
     packet->image_hdr_version = header->image_hdr_version;
     packet->image_type = header->image_type;
+    packet->is_patch = header->is_patch;
     packet->version_major = header->version_major;
     packet->version_minor = header->version_minor;
     packet->version_patch = header->version_patch;
@@ -97,6 +98,7 @@ void packet_to_header(const ImageHeader_Packet_t* packet, ImageHeader_t* header)
     header->image_magic = packet->image_magic;
     header->image_hdr_version = packet->image_hdr_version;
     header->image_type = packet->image_type;
+    header->is_patch = packet->is_patch;
     header->version_major = packet->version_major;
     header->version_minor = packet->version_minor;
     header->version_patch = packet->version_patch;

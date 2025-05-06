@@ -196,8 +196,6 @@ int handle_firmware_patch(uint32_t source_addr, uint32_t patch_addr, uint32_t ta
     ImageHeader_t patch_header;
     memcpy(&patch_header, (void*)patch_addr, sizeof(ImageHeader_t));
     
-    char debug[120];
-    
     // Verify source firmware is valid
     if (!is_image_valid(&source_header)) {
         uart_transport_send((const uint8_t*)"ERROR: Source firmware is not valid\r\n", 37);

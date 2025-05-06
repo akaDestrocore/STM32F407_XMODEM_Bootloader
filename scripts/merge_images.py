@@ -292,6 +292,16 @@ def main():
     
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
     
+    # Patch command
+    patch_parser = subparsers.add_parser("patch", help="Patch a binary with header information")
+    patch_parser.add_argument("filename", help="Binary file to patch")
+    patch_parser.add_argument("--type", type=int, required=True, choices=[1, 2, 3], 
+                             help="Image type: 1=Loader, 2=Updater, 3=Application")
+    patch_parser.add_argument("--version", required=True, help="Version in format 'major.minor.patch'")
+    patch_parser.add_argument("--base-addr", type=lambda x: int(x, 0), 
+                             help="Base address override (default: determined by type)")
+    patch_parser.add_argument("--is-patch", action="store_true", help="Flag to indicate this is a delta patch")
+
     # Merge command
     merge_parser = subparsers.add_parser("merge", help="Merge multiple binaries into a single image")
     merge_parser.add_argument("boot", help="Boot binary file")
