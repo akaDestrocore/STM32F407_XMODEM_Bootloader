@@ -240,6 +240,7 @@ target_sources(updater_debug PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/uart_transport.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/syscalls.c
     ${CMAKE_CURRENT_SOURCE_DIR}/common/src/xmodem.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/common/src/delta_update.c
     ${MBEDTLS_SOURCES}
     ${JANPATCH_SOURCES}
 )
@@ -295,9 +296,52 @@ add_custom_target(patch_and_merge ALL
     --app-version 1.0.0 
     --output ${CMAKE_BINARY_DIR}/merged_firmware.bin
 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-COMMENT "Building firmware with headers and merging components"
-VERBATIM
+    COMMENT "Building firmware with headers and merging components"
+    VERBATIM
 )
+
+# Install Python encryption dependencies
+add_custom_target(install_python_deps
+    COMMAND ${VENV_PYTHON} -m pip install pycryptodome
+    COMMENT "Installing Python dependencies for firmware encryption"
+)
+
+# Copy encryption script
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts/encrypt_firmware.py
+     DESTINATION ${CMAKE_BINARY_DIR}/scripts)
+
+# Add targets for firmware encryption
+add_custom_target(encrypt_app
+    DEPENDS app_debug
+    COMMAND ${VENV_PYTHON} ${CMAKE_BINARY_DIR}/scripts/encrypt_firmware.py 
+        encrypt ${CMAKE_BINARY_DIR}/app_debug_patched.bin 
+        ${CMAKE_BINARY_DIR}/app_debug_encrypted.bin
+    COMMENT "Encrypting application firmware"
+    VERBATIM
+)
+
+add_custom_target(encrypt_updater
+    DEPENDS updater_debug
+    COMMAND ${VENV_PYTHON} ${CMAKE_BINARY_DIR}/scripts/encrypt_firmware.py 
+        encrypt ${CMAKE_BINARY_DIR}/updater_debug_patched.bin 
+        ${CMAKE_BINARY_DIR}/updater_debug_encrypted.bin
+    COMMENT "Encrypting updater firmware"
+    VERBATIM
+)
+
+add_custom_target(encrypt_loader
+    DEPENDS loader_debug
+    COMMAND ${VENV_PYTHON} ${CMAKE_BINARY_DIR}/scripts/encrypt_firmware.py 
+        encrypt ${CMAKE_BINARY_DIR}/loader_debug_patched.bin 
+        ${CMAKE_BINARY_DIR}/loader_debug_encrypted.bin
+    COMMENT "Encrypting loader firmware"
+    VERBATIM
+)
+
+# Add dependency on Python deps for encryption targets
+add_dependencies(encrypt_app install_python_deps)
+add_dependencies(encrypt_updater install_python_deps)
+
 
 add_custom_target(flash_full
     DEPENDS patch_and_merge
