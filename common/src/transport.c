@@ -1,6 +1,12 @@
 #include "transport.h"
 
-// Initialize transport
+/**
+ * @brief Initializes the transport interface with the specified type and configuration.
+ * @param transport Pointer to the Transport structure.
+ * @param type The transport type to initialize.
+ * @param config Pointer to transport specific configuration structure.
+ * @return 0 on success, -1 on failure or invalid transport type.
+ */
 int transport_init(Transport_t* transport, TransportType_t type, void* config) {
     transport->type = type;
     transport->config = config;
@@ -14,23 +20,6 @@ int transport_init(Transport_t* transport, TransportType_t type, void* config) {
             transport->process = uart_transport_process;
             transport->deinit = uart_transport_deinit;
             break;
-        /*
-        case TRANSPORT_I2C:
-            transport->init = i2c_transport_init;
-            transport->send = i2c_transport_send;
-            transport->receive = i2c_transport_receive;
-            transport->process = i2c_transport_process;
-            transport->deinit = i2c_transport_deinit;
-            break;
-            
-        case TRANSPORT_SPI:
-            transport->init = spi_transport_init;
-            transport->send = spi_transport_send;
-            transport->receive = spi_transport_receive;
-            transport->process = spi_transport_process;
-            transport->deinit = spi_transport_deinit;
-            break;
-        */
         default:
             return -1; // Invalid transport type
     }
@@ -44,7 +33,14 @@ int transport_init(Transport_t* transport, TransportType_t type, void* config) {
     return 0;
 }
 
-// Send data
+
+/**
+ * @brief Sends data using the initialized transport.
+ * @param transport Pointer to the initialized Transport structure.
+ * @param data Pointer to the data buffer to send.
+ * @param len Length of the data buffer.
+ * @return Number of bytes sent on success, -1 if transport is not initialized or on error.
+ */
 int transport_send(Transport_t* transport, const uint8_t* data, size_t len) {
     if (!transport->initialized) {
         return -1;
@@ -53,7 +49,14 @@ int transport_send(Transport_t* transport, const uint8_t* data, size_t len) {
     return transport->send(data, len);
 }
 
-// Receive data
+
+/**
+ * @brief Receives data using the initialized transport.
+ * @param transport Pointer to the initialized Transport structure.
+ * @param data Pointer to the buffer to store received data.
+ * @param len Maximum number of bytes to receive.
+ * @return Number of bytes received on success, -1 if transport is not initialized or on error.
+ */
 int transport_receive(Transport_t* transport, uint8_t* data, size_t len) {
     if (!transport->initialized) {
         return -1;
@@ -62,7 +65,12 @@ int transport_receive(Transport_t* transport, uint8_t* data, size_t len) {
     return transport->receive(data, len);
 }
 
-// Process transport events
+
+/**
+ * @brief Processes pending events or tasks related to the transport.
+ * @param transport Pointer to the initialized Transport structure.
+ * @return 0 on success, -1 if transport is not initialized or on error.
+ */
 int transport_process(Transport_t* transport) {
     if (!transport->initialized) {
         return -1;
@@ -71,7 +79,11 @@ int transport_process(Transport_t* transport) {
     return transport->process();
 }
 
-// Deinitialize transport
+/**
+ * @brief Deinitializes the transport interface.
+ * @param transport Pointer to the initialized Transport structure.
+ * @return 0 on success, -1 if transport is not initialized or on error.
+ */
 int transport_deinit(Transport_t* transport) {
     if (!transport->initialized) {
         return -1;

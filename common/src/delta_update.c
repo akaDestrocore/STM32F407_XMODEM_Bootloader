@@ -5,6 +5,11 @@ static unsigned char source_buf[DELTA_BUFFER_SIZE];
 static unsigned char target_buf[DELTA_BUFFER_SIZE];
 static unsigned char patch_buf[DELTA_BUFFER_SIZE];
 
+/**
+ * @brief  Callback function to report the progress of the patching operation.
+ * @param  percentage: [in] Progress percentage (0-100).
+ * @note   Displays progress in steps of 10% over UART.
+ */
 static void delta_progress_callback(uint8_t percentage) {
     static uint8_t last_percent = 0;
     
@@ -16,6 +21,17 @@ static void delta_progress_callback(uint8_t percentage) {
     }
 }
 
+
+/**
+ * @brief  Applies a delta patch to a source firmware image.
+ * @param  source_addr: [in] Address of the source firmware.
+ * @param  patch_addr: [in] Address of the patch.
+ * @param  target_addr: [in] Address where the patched firmware will be stored.
+ * @param  source_size: [in] Size of the source firmware in bytes.
+ * @param  patch_size: [in] Size of the patch in bytes.
+ * @return 1 on success, 0 on failure.
+ * @note   This function uses the `JANPATCH` library to apply the delta patch.
+ */
 int apply_delta_patch(uint32_t source_addr, uint32_t patch_addr, uint32_t target_addr,
                      uint32_t source_size, uint32_t patch_size) {
     char debug[120];
@@ -82,6 +98,12 @@ int apply_delta_patch(uint32_t source_addr, uint32_t patch_addr, uint32_t target
     }
 }
 
+/**
+ * @brief  Calculates the CRC of the firmware image.
+ * @param  addr: [in] Address of the firmware to calculate CRC for.
+ * @param  size: [in] Size of the firmware in bytes.
+ * @return The calculated CRC.
+ */
 static uint32_t calculate_firmware_crc(uint32_t addr, uint32_t size) {
     // Initialize CRC
     crc_init();
@@ -90,6 +112,12 @@ static uint32_t calculate_firmware_crc(uint32_t addr, uint32_t size) {
     return crc_calculate_memory(addr, size);
 }
 
+/**
+ * @brief  Verifies the CRC of the patched firmware.
+ * @param  target_addr: [in] Address of the patched firmware.
+ * @param  header_size: [in] Size of the firmware header.
+ * @return 1 if CRC matches, 0 otherwise.
+ */
 int verify_patched_firmware(uint32_t target_addr, uint32_t header_size) {
     ImageHeader_t header;
     memcpy(&header, (void*)target_addr, sizeof(ImageHeader_t));
@@ -112,6 +140,14 @@ int verify_patched_firmware(uint32_t target_addr, uint32_t header_size) {
     return (calculated_crc == header.crc);
 }
 
+/**
+ * @brief  Safely writes data to flash memory.
+ * @param  addr: [in] Address to write to.
+ * @param  data: [in] Pointer to the data to write.
+ * @param  size: [in] Size of the data to write.
+ * @param  operation: [in] Operation description (error reporting).
+ * @return 1 on success, 0 on failure.
+ */
 static int safe_flash_write(uint32_t addr, const uint8_t* data, uint32_t size, const char* operation) {
     char debug[120];
     
@@ -137,6 +173,13 @@ static int safe_flash_write(uint32_t addr, const uint8_t* data, uint32_t size, c
     return 1;
 }
 
+/**
+ * @brief  Erases memory sectors to prepare for a new firmware write.
+ * @param  addr: [in] Address of the memory to erase.
+ * @param  size: [in] Size of the memory to erase.
+ * @param  description: [in] Description for error msg.
+ * @return 1 on success, 0 on failure.
+ */
 static int erase_memory_sectors(uint32_t addr, uint32_t size, const char* description) {
     char debug[120];
     sprintf(debug, "Erasing %s sectors at 0x%08lX...\r\n", description, addr);
@@ -167,6 +210,13 @@ static int erase_memory_sectors(uint32_t addr, uint32_t size, const char* descri
     return 1;
 }
 
+/**
+ * @brief  Restores the firmware from a backup if patching fails.
+ * @param  target_addr: [in] Target address to restore to.
+ * @param  backup_addr: [in] Backup address containing the original firmware.
+ * @param  size: [in] Size of the firmware to restore.
+ * @return 1 on success, 0 on failure.
+ */
 static int restore_from_backup(uint32_t target_addr, uint32_t backup_addr, uint32_t size) {
     uart_transport_send((const uint8_t*)"Restoring from backup...\r\n", 26);
     
@@ -185,6 +235,16 @@ static int restore_from_backup(uint32_t target_addr, uint32_t backup_addr, uint3
     return 1;
 }
 
+/**
+ * @brief  Handles the full firmware patching, including backup, patch application and verification.
+ * @param  source_addr: [in] Address of the source firmware.
+ * @param  patch_addr: [in] Address of the patch.
+ * @param  target_addr: [in] Address for the patched firmware.
+ * @param  backup_addr: [in] Address for storing a backup.
+ * @param  header_size: [in] Size of the header for the firmware images.
+ * @return 0 on success, error code on failure.
+ * @note   This function handles the entire firmware patching flow including error handling and restoration.
+ */
 int handle_firmware_patch(uint32_t source_addr, uint32_t patch_addr, uint32_t target_addr, 
     uint32_t backup_addr, uint32_t header_size) {
     

@@ -186,70 +186,68 @@ int main(void) {
     MX_GPIO_Init();
     setup_leds();
     
-    /* Configure UART */
+    // Configure UART
     uart_config.usart = USART2;
     uart_config.baudrate = 115200;
     uart_config.timeout = 1000;
     uart_config.use_xmodem = 0;
     
-    /* Initialize transport */
+    // Initialize transport
     transport_init(&uart_transport, TRANSPORT_UART, &uart_config);
     
-    /* Enable USART2 interrupt in NVIC */
+    // Enable USART2 interrupt in NVIC
     NVIC_EnableIRQ(USART2_IRQn);
     
-    /* Clear the screen */
+    // Clear the screen
     clear_screen();
     
-    /* Print banner */
+    // Print banner
     transport_send(&uart_transport, (const uint8_t*)BOOT_BANNER, strlen(BOOT_BANNER));
     delay_ms(2000);
     
-    /* Animation loop variables */
+    // Animation loop variables
     uint8_t frame_index = 0;
     uint8_t led_index = 0;
     uint32_t last_update = HAL_GetTick();
     uint32_t last_led_toggle = HAL_GetTick();
     char buffer[256];
     
-    /* Main loop */
     while (1) {
-        /* Process UART data */
+        // Process UART data
         transport_process(&uart_transport);
         
-        /* Get current time */
+        // Get current time
         uint32_t current_time = HAL_GetTick();
         
-        /* Update animation every 200 ms */
+        // Update animation every 200 ms
         if (current_time - last_update >= 200) {
-            /* Clear screen and reset cursor position */
+            // Clear screen and reset cursor position
             transport_send(&uart_transport, (const uint8_t*)"\x1B[2J\x1B[1;1H", 10);
             
-            /* Send colored title */
+            // Send colored title
             transport_send(&uart_transport, (const uint8_t*)"\x1B[96mPONG ANIMATION\x1B[0m\r\n\r\n", 25);
             
-            /* Send current frame in blue color */
+            // Send current frame in blue color
             transport_send(&uart_transport, (const uint8_t*)"\x1B[34m", 5);
             transport_send(&uart_transport, (const uint8_t*)FRAMES[frame_index], strlen(FRAMES[frame_index]));
             transport_send(&uart_transport, (const uint8_t*)"\x1B[0m", 4);
             
-            /* Additional info */
             sprintf(buffer, "\r\n\x1B[91mFirmware v1.0.0 - System uptime: %u sec\x1B[0m\r\n", current_time / 1000);
             transport_send(&uart_transport, (const uint8_t*)buffer, strlen(buffer));
             
-            /* Move to next frame */
+            // Move to next frame
             frame_index = (frame_index + 1) % FRAMES_COUNT;
             last_update = current_time;
         }
         
-        /* Blink LEDs for 100 ms each */
+        // Blink LEDs for 100 ms each
         if (current_time - last_led_toggle >= 100) {
-            /* Turn off all LEDs */
+            // Turn off all LEDs
             for (int i = 0; i < 4; i++) {
                 LL_GPIO_ResetOutputPin(GPIOD, LL_GPIO_PIN_12 << i);
             }
             
-            /* Enable next LED in sequence */
+            // Enable next LED in sequence
             LL_GPIO_SetOutputPin(GPIOD, LL_GPIO_PIN_12 << led_index);
             
             /* Move to next LED */
@@ -275,8 +273,9 @@ static void clear_screen(void) {
   */
 static void delay_ms(uint32_t ms) {
     uint32_t start = HAL_GetTick();
-    while (HAL_GetTick() - start < ms) {
-        __NOP();
+    while (HAL_GetTick() - start < ms) 
+    {
+        // Wait
     }
 }
 

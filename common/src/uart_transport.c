@@ -17,10 +17,18 @@ typedef struct {
 
 static UARTTransport_State_t uart_state;
 
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
 void USART2_IRQHandler(void) {
     uart_transport_irq_handler();
 }
 
+/**
+ * @brief Initialize UART transport with the given configuration.
+ * @param config Pointer to UARTTransport_Config_t.
+ * @return 0 on success, -1 on failure.
+ */
 int uart_transport_init(void* config) {
     UARTTransport_Config_t* uart_config = (UARTTransport_Config_t*)config;
     uart_state.config = uart_config;
@@ -85,7 +93,13 @@ int uart_transport_init(void* config) {
     return 0;
 }
 
-// Send data via UART
+
+/**
+ * @brief Send a data buffer over UART.
+ * @param data Pointer to data to send.
+ * @param len Length of data.
+ * @return Number of bytes sent.
+ */
 int uart_transport_send(const uint8_t* data, size_t len) {
     if (data == NULL || len == 0) {
         return 0;
@@ -108,7 +122,11 @@ int uart_transport_send(const uint8_t* data, size_t len) {
     return sent;
 }
 
-// Send a single byte via UART
+/**
+ * @brief Send a single byte over UART.
+ * @note This function is blocking until the byte is sent.
+ * @param byte Byte to send.
+ */
 void uart_transport_send_byte(uint8_t byte) {
     // Wait until transmit buffer is empty
     while (!LL_USART_IsActiveFlag_TXE(uart_state.config->usart)) {}
@@ -117,7 +135,12 @@ void uart_transport_send_byte(uint8_t byte) {
     LL_USART_TransmitData8(uart_state.config->usart, byte);
 }
 
-// Receive data via UART
+/**
+ * @brief Receive data from UART.
+ * @param data Buffer to store received data.
+ * @param len Maximum number of bytes to receive.
+ * @return Number of bytes received.
+ */
 int uart_transport_receive(uint8_t* data, size_t len) {
     if (data == NULL || len == 0) {
         return 0;
@@ -135,13 +158,20 @@ int uart_transport_receive(uint8_t* data, size_t len) {
     return received;
 }
 
-// Check if TX is complete
+
+/**
+ * @brief Check if UART transmission is complete.
+ * @return 1 if complete, 0 otherwise.
+ */
 int uart_transport_is_tx_complete(void) {
     return ring_buffer_is_empty(&uart_state.tx_buffer) && 
            LL_USART_IsActiveFlag_TC(uart_state.config->usart);
 }
 
-// Process UART events
+/**
+ * @brief Process UART-related events such as XMODEM transfers.
+ * @return 1 on successful XMODEM transfer, 0 if ongoing, -1 on error.
+ */
 int uart_transport_process(void) {
     // Process XMODEM if in receive mode
     if (uart_state.receive_mode && uart_state.config->use_xmodem) {
@@ -182,12 +212,18 @@ int uart_transport_process(void) {
     return 0;
 }
 
-// Clear RX buffer
+/**
+ * @brief Clear the UART RX buffer.
+ */
 void uart_transport_clear_rx(void) {
     ring_buffer_clear(&uart_state.rx_buffer);
 }
 
-// Deinitialize UART
+
+/**
+ * @brief Deinitialize the UART transport.
+ * @return 0 on success.
+ */
 int uart_transport_deinit(void) {
     // Disable UART interrupts
     LL_USART_DisableIT_RXNE(uart_state.config->usart);
@@ -199,7 +235,11 @@ int uart_transport_deinit(void) {
     return 0;
 }
 
-// Start XMODEM receive
+/**
+ * @brief Start an XMODEM receive to a specified memory address.
+ * @param target_addr Destination memory address.
+ * @return 0 on success, -1 if XMODEM is not enabled.
+ */
 int uart_transport_xmodem_receive(uint32_t target_addr) {
     if (!uart_state.config->use_xmodem) {
         return -1;
@@ -214,11 +254,18 @@ int uart_transport_xmodem_receive(uint32_t target_addr) {
     return 0;
 }
 
-// Get XMODEM state
+/**
+ * @brief Get the current state of the XMODEM protocol.
+ * @return Current XmodemState_t value.
+ */
 XmodemState_t uart_transport_xmodem_state(void) {
     return xmodem_get_state(&uart_state.xmodem);
 }
 
+
+/**
+ * @brief Handle UART interrupt events like TXE, RXNE and errors.
+ */
 void uart_transport_irq_handler(void) {
     USART_TypeDef* usart = uart_state.config->usart;
     
@@ -256,11 +303,19 @@ void uart_transport_irq_handler(void) {
     }
 }
 
-// Get ring buffers for direct access if needed
+/**
+ * @brief Get a pointer to the UART RX ring buffer.
+ * @return Pointer to RX RingBuffer_t.
+ */
 RingBuffer_t* get_uart_rx_buffer(void) {
     return &uart_state.rx_buffer;
 }
 
+
+/**
+ * @brief Get a pointer to the UART TX ring buffer.
+ * @return Pointer to TX RingBuffer_t.
+ */
 RingBuffer_t* get_uart_tx_buffer(void) {
     return &uart_state.tx_buffer;
 }

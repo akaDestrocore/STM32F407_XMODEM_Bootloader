@@ -1,6 +1,10 @@
 #include "ring_buffer.h"
 
-// Initialize a ring buffer
+
+/**
+ * @brief Initializes the ring buffer.
+ * @param rb Pointer to the ring buffer structure.
+ */
 void ring_buffer_init(RingBuffer_t* rb) {
     __disable_irq();
     
@@ -11,7 +15,13 @@ void ring_buffer_init(RingBuffer_t* rb) {
     __enable_irq();
 }
 
-// Write a byte to the buffer
+
+/**
+ * @brief Writes a byte to the ring buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @param byte Byte to write.
+ * @return true if the byte was successfully written, false if the buffer is full.
+ */
 bool ring_buffer_write(RingBuffer_t* rb, uint8_t byte) {
     bool result = false;
     
@@ -35,7 +45,13 @@ bool ring_buffer_write(RingBuffer_t* rb, uint8_t byte) {
     return result;
 }
 
-// Read a byte from the buffer
+
+/**
+ * @brief Reads a byte from the ring buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @param byte Pointer to store the read byte.
+ * @return true if a byte was successfully read, false if the buffer is empty.
+ */
 bool ring_buffer_read(RingBuffer_t* rb, uint8_t* byte) {
     bool result = false;
     
@@ -59,7 +75,11 @@ bool ring_buffer_read(RingBuffer_t* rb, uint8_t* byte) {
     return result;
 }
 
-// Check if the buffer is empty
+/**
+ * @brief Checks if the ring buffer is empty.
+ * @param rb Pointer to the ring buffer structure.
+ * @return true if the buffer is empty, false otherwise.
+ */
 bool ring_buffer_is_empty(RingBuffer_t* rb) {
     bool result;
     
@@ -70,7 +90,11 @@ bool ring_buffer_is_empty(RingBuffer_t* rb) {
     return result;
 }
 
-// Check if the buffer is full
+/**
+ * @brief Checks if the ring buffer is full.
+ * @param rb Pointer to the ring buffer structure.
+ * @return true if the buffer is full, false otherwise.
+ */
 bool ring_buffer_is_full(RingBuffer_t* rb) {
     bool result;
     
@@ -81,7 +105,11 @@ bool ring_buffer_is_full(RingBuffer_t* rb) {
     return result;
 }
 
-// Get number of bytes in the buffer
+/**
+ * @brief Gets the number of bytes currently stored in the buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @return Number of bytes in the buffer.
+ */
 size_t ring_buffer_len(RingBuffer_t* rb) {
     size_t result;
     
@@ -92,7 +120,11 @@ size_t ring_buffer_len(RingBuffer_t* rb) {
     return result;
 }
 
-// Clear the buffer
+
+/**
+ * @brief Clears the ring buffer.
+ * @param rb Pointer to the ring buffer structure.
+ */
 void ring_buffer_clear(RingBuffer_t* rb) {
     __disable_irq();
     
@@ -103,7 +135,12 @@ void ring_buffer_clear(RingBuffer_t* rb) {
     __enable_irq();
 }
 
-// Get tail position
+
+/**
+ * @brief Retrieves the current tail index of the buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @return Current tail index.
+ */
 size_t ring_buffer_get_tail(RingBuffer_t* rb) {
     size_t result;
     
@@ -114,7 +151,11 @@ size_t ring_buffer_get_tail(RingBuffer_t* rb) {
     return result;
 }
 
-// Get head position
+/**
+ * @brief Retrieves the current head index of the buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @return Current head index.
+ */
 size_t ring_buffer_get_head(RingBuffer_t* rb) {
     size_t result;
     
@@ -125,7 +166,12 @@ size_t ring_buffer_get_head(RingBuffer_t* rb) {
     return result;
 }
 
-// Get a byte from the buffer at a specific index without removing it
+/**
+ * @brief Retrieves a byte from the buffer at a specific index without removing it.
+ * @param rb Pointer to the ring buffer structure.
+ * @param index Index to retrieve the byte from.
+ * @return Byte value at the specified index.
+ */
 uint8_t ring_buffer_get_byte(RingBuffer_t* rb, size_t index) {
     uint8_t result;
     
@@ -136,7 +182,12 @@ uint8_t ring_buffer_get_byte(RingBuffer_t* rb, size_t index) {
     return result;
 }
 
-// Peek at the next byte without removing it
+/**
+ * @brief Peeks at the next byte to be read without removing it from the buffer.
+ * @param rb Pointer to the ring buffer structure.
+ * @param byte Pointer to store the peeked byte.
+ * @return true if a byte was successfully peeked, false if the buffer is empty.
+ */
 bool ring_buffer_peek(RingBuffer_t* rb, uint8_t* byte) {
     bool result = false;
     

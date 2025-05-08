@@ -38,7 +38,6 @@ void Error_Handler(void);
 #define PATCH_ADDR          ((uint32_t)0x080C0000U)
 #define IMAGE_HDR_SIZE      0x200
 
-/* USER CODE END Private defines */
 
 #ifdef __cplusplus
 }

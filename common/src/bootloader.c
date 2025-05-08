@@ -1,5 +1,14 @@
 #include "bootloader.h"
 
+
+/**
+ * @brief  Validates the firmware image header at a specified address.
+ * @param  addr: [in] Start address of the firmware image in flash memory.
+ * @param  config: [in] Pointer to BootConfig_t structure containing valid image base addresses.
+ * @return 1 if the image has a valid magic number for the corresponding type, 0 otherwise.
+ * @note   This function checks the image magic field against predefined values for app, updater, or loader.
+ * @note   Returns 0 if the address does not match any known image base addresses.
+ */
 int is_firmware_valid(uint32_t addr, const BootConfig_t* config) {
     // Read header from flash memory
     ImageHeader_t header;
@@ -17,6 +26,12 @@ int is_firmware_valid(uint32_t addr, const BootConfig_t* config) {
     return 0; // Invalid addr
 }
 
+
+/**
+ * @brief  Resets all peripheral buses to their default state.
+ * @note   This function deinitializes peripherals by writing to the reset registers of APB1, APB2, AHB1, AHB2, and AHB3.
+ * @note   Must be called before jumping to another firmware image.
+ */
 static void deinit_peripherals(void) {
     // Reset all peripheral clocks
     RCC->APB1RSTR = 0xF6FEC9FF;
@@ -35,6 +50,13 @@ static void deinit_peripherals(void) {
     RCC->AHB3RSTR = 0x0;
 }
 
+
+/**
+ * @brief  Restores system clock configuration to default state.
+ * @note   Enables HSI, disables HSE/PLL, and resets relevant registers.
+ * @note   Should be called before jumping to application code.
+ * @note   May block until oscillators and PLL are properly disabled/stabilized.
+ */
 static void reset_system_clock(void) {
     // Enable HSI
     RCC->CR |= RCC_CR_HSION;
@@ -70,6 +92,14 @@ static void reset_system_clock(void) {
     RCC->CIR = 0;
 }
 
+
+/**
+ * @brief  Prepares for booting into new image.
+ * @param  addr: [in] Base address of the firmware image.
+ * @param  header_size: [in] Size of the firmware image header in bytes.
+ * @note   This function resets the clock configuration and peripherals, disables faults and SysTick,
+ *         remaps memory, clears pending exceptions, and sets the vector table to the new image.
+ */
 void prepare_for_boot(uint32_t addr, uint32_t header_size) {
     // Reset clock and peripherals
     reset_system_clock();
@@ -94,6 +124,12 @@ void prepare_for_boot(uint32_t addr, uint32_t header_size) {
     SCB->VTOR = addr + header_size;
 }
 
+/**
+ * @brief  Boots the application firmware image.
+ * @param  config: [in] Pointer to BootConfig_t containing image addresses and header size.
+ * @note   Validates image, prepares system state, sets MSP, and jumps to the application's reset handler.
+ * @note   Interrupts are disabled before jumping; no return from this function is expected.
+ */
 void boot_application(const BootConfig_t* config) {
     if (!is_firmware_valid(config->app_addr, config)) {
         return; // don't boot
@@ -118,6 +154,12 @@ void boot_application(const BootConfig_t* config) {
 
 }
 
+
+/**
+ * @brief  Boots the firmware updater image.
+ * @param  config: [in] Pointer to BootConfig_t containing image addresses and header size.
+ * @note   Validates updater image, prepares system, disables interrupts, sets MSP, and jumps to the updater.
+ */
 void boot_updater(const BootConfig_t* config) {
     if (!is_firmware_valid(config->updater_addr, config)) {
         return; // Invalid updater - don't boot
@@ -142,6 +184,11 @@ void boot_updater(const BootConfig_t* config) {
     
 }
 
+/**
+ * @brief  Boots the bootloader image.
+ * @param  config: [in] Pointer to BootConfig_t containing image addresses and header size.
+ * @note   Validates loader image, resets system, disables interrupts, sets MSP, and jumps to loader code.
+ */
 void boot_loader(const BootConfig_t* config) {
     if (!is_firmware_valid(config->loader_addr, config)) {
         return; // don't boot
@@ -166,6 +213,16 @@ void boot_loader(const BootConfig_t* config) {
 
 }
 
+
+/**
+ * @brief  Reads and validates the firmware image header from flash.
+ * @param  addr: [in] Start address of the image in flash.
+ * @param  config: [in] Pointer to BootConfig_t containing valid image addresses.
+ * @param  header: [out] Pointer to ImageHeader_t structure to receive the image header.
+ * @return 1 if the header is valid for one of the image slots, 0 otherwise.
+ * @note   Validates the magic number from image's header.
+ * @note   Caller must ensure the address points to readable memory.
+ */
 int get_firmware_header(uint32_t addr, const BootConfig_t* config, ImageHeader_t* header) {
     // Read header from flash
     memcpy(header, (void*)addr, sizeof(ImageHeader_t));

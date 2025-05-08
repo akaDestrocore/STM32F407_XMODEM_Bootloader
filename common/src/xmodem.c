@@ -21,6 +21,12 @@ static const uint8_t HeaderAES[16] = {
 
 #define DATA_SIZE 128
 
+/**
+ * @brief Calculates CRC-16 bit for the given data buffer.
+ * @param data Pointer to the data buffer.
+ * @param len Length of the data buffer.
+ * @return uint16_t Computed CRC-16 value.
+ */
 static uint16_t calculate_crc16(const uint8_t* data, size_t len) {
     uint16_t crc = 0;
     
@@ -38,6 +44,13 @@ static uint16_t calculate_crc16(const uint8_t* data, size_t len) {
     return crc;
 }
 
+/**
+ * @brief Initializes the XMODEM manager with the specified configuration.
+ * @note This function sets up the internal state and prepares for an XMODEM transfer.
+ * @note If encryption is enabled, the AES-GCM context is initialized with a default key.
+ * @param manager Pointer to the XmodemManager_t structure to initialize.
+ * @param config Pointer to the configuration structure.
+ */
 void xmodem_init(XmodemManager_t* manager, const XmodemConfig_t* config) {
     memset(manager, 0, sizeof(XmodemManager_t));
     manager->state = XMODEM_STATE_IDLE;
@@ -60,6 +73,15 @@ void xmodem_init(XmodemManager_t* manager, const XmodemConfig_t* config) {
 #endif
 }
 
+
+/**
+ * @brief Starts the XMODEM reception process at the specified address.
+ * @note Initializes internal variables, prepares flash sectors for writing, and validates
+ * @note the intended target address against known application areas. If encryption is enabled,
+ * @note related buffers and flags are initialized.
+ * @param manager Pointer to the XmodemManager_t structure.
+ * @param intended_addr The destination memory address for the incoming firmware.
+ */
 void xmodem_start(XmodemManager_t* manager, uint32_t intended_addr) {
     manager->state = XMODEM_STATE_SENDING_INITIAL_C;
     manager->intended_addr = intended_addr;
@@ -126,6 +148,16 @@ void xmodem_start(XmodemManager_t* manager, uint32_t intended_addr) {
     }
 }
 
+/**
+ * @brief Processes the first data packet received via XMODEM.
+ * @note Parses the packet header to validate the image magic and type, checks
+ * @note firmware size, and handles decryption and flash writing if encryption is used.
+ * @note Also verifies versioning against existing firmware to determine if update is valid.
+ * @param manager Pointer to the XmodemManager_t structure.
+ * @param data Pointer to the 128-byte received data buffer.
+ * @return int 1 if the packet is processed successfully, 0 if there's a recoverable error, 
+ *             or -1 if there’s an unrecoverable error.
+ */
 static int process_first_packet(XmodemManager_t* manager, const uint8_t* data) {
     #ifdef FIRMWARE_ENCRYPTED
         if (manager->use_encryption) {
@@ -334,6 +366,17 @@ static int process_first_packet(XmodemManager_t* manager, const uint8_t* data) {
         return 1;
     }
 
+/**
+ * @brief Processes a regular data packet during XMODEM reception.
+ * @note This function handles writing decrypted or raw data to flash,
+ * @note including sector boundary detection and erasure. If this is the final
+ * @note packet and encryption is enabled, it performs GCM authentication tag verification.
+ * @param manager Pointer to the XmodemManager_t structure.
+ * @param data Pointer to the 128-byte received data buffer.
+ * @param packet_num Sequence number of the received packet.
+ * @return int 1 if successful, 0 if there was an error writing/decrypting,
+ *             -1 if GCM tag authentication fails.
+ */
 static int process_data_packet(XmodemManager_t* manager, const uint8_t* data, uint8_t packet_num) {
 #ifdef FIRMWARE_ENCRYPTED
     if (manager->use_encryption && manager->gcm_initialized) {
@@ -572,6 +615,14 @@ static int process_data_packet(XmodemManager_t* manager, const uint8_t* data, ui
     return 1;
 }
 
+/**
+ * @brief Processes a single byte received during the XMODEM transfer.
+ * @note Handles state transitions based on protocol, including SOH, EOT, CAN detection,
+ * @note timeouts, CRC validation, packet sequence, and flash or encrypted data handling.
+ * @param manager Pointer to the XmodemManager_t instance.
+ * @param byte The received byte to process.
+ * @return XmodemError_t Error or success status indicating how the byte was processed.
+ */
 XmodemError_t xmodem_process_byte(XmodemManager_t* manager, uint8_t byte) {
     uint32_t current_time = HAL_GetTick();
     
@@ -757,6 +808,11 @@ XmodemError_t xmodem_process_byte(XmodemManager_t* manager, uint8_t byte) {
     }
 }
 
+/**
+ * @brief Determines whether a byte should be sent by the receiver.
+ * @param manager Pointer to the XmodemManager_t instance.
+ * @return int 1 if a byte should be sent, 0 otherwise.
+ */
 int xmodem_should_send_byte(XmodemManager_t* manager) {
     uint32_t current_time = HAL_GetTick();
     
@@ -780,20 +836,39 @@ int xmodem_should_send_byte(XmodemManager_t* manager) {
     return manager->next_byte_to_send != 0;
 }
 
+/**
+ * @brief Retrieves the next response byte that should be sent back to the sender.
+ * @param manager Pointer to the XmodemManager_t instance.
+ * @return uint8_t The response byte to send.
+ */
 uint8_t xmodem_get_response(XmodemManager_t* manager) {
     uint8_t response = manager->next_byte_to_send;
     manager->next_byte_to_send = 0;
     return response;
 }
 
+/**
+ * @brief Returns the current state of the XMODEM state machine.
+ * @param manager Pointer to the XmodemManager_t instance.
+ * @return XmodemState_t Current transfer state.
+ */
 XmodemState_t xmodem_get_state(XmodemManager_t* manager) {
     return manager->state;
 }
 
+/**
+ * @brief Returns the number of successfully processed packets.
+ * @param manager Pointer to the XmodemManager_t instance.
+ * @return uint16_t Number of successfully received packets.
+ */
 uint16_t xmodem_get_packet_count(XmodemManager_t* manager) {
     return manager->packet_count;
 }
 
+/**
+ * @brief Cancels the current transfer and resets state.
+ * @param manager Pointer to the XmodemManager_t instance.
+ */
 void xmodem_cancel_transfer(XmodemManager_t* manager) {
     manager->state = XMODEM_STATE_ERROR;
     manager->next_byte_to_send = 0;
@@ -807,6 +882,11 @@ void xmodem_cancel_transfer(XmodemManager_t* manager) {
 #endif
 }
 
+
+/**
+ * @brief Cleans up any allocated resources after transfer ends.
+ * @param manager Pointer to the XmodemManager_t instance.
+ */
 void xmodem_cleanup(XmodemManager_t* manager) {
 #ifdef FIRMWARE_ENCRYPTED
     if (manager->use_encryption && manager->gcm_initialized) {

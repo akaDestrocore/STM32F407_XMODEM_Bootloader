@@ -18,6 +18,10 @@ static const uint32_t FLASH_SECTORS_KB[] = {
 
 static const uint8_t FLASH_SECTOR_COUNT = sizeof(FLASH_SECTORS_KB) / sizeof(FLASH_SECTORS_KB[0]);
 
+/**
+ * @brief Unlocks the Flash memory for write/erase operations.
+ * @return int Returns 1 if the Flash is successfully unlocked or already unlocked, 0 otherwise.
+ */
 int flash_unlock(void) {
     // Check if already unlocked
     if ((FLASH->CR & FLASH_CR_LOCK) == 0) {
@@ -28,10 +32,17 @@ int flash_unlock(void) {
     return (status == HAL_OK) ? 1 : 0;
 }
 
+/**
+ * @brief Locks the flash memory to prevent further write/erase operations.
+ */
 void flash_lock(void) {
     HAL_FLASH_Lock();
 }
 
+/**
+ * @brief Waits for the last flash operation to complete and clears any errors.
+ * @retval 1 if successful, 0 if timeout or error occurred.
+ */
 int flash_wait_for_last_operation(void) {
     uint32_t timeout = HAL_GetTick() + 100; // 100ms
     
@@ -57,6 +68,12 @@ int flash_wait_for_last_operation(void) {
     return 1;
 }
 
+
+/**
+ * @brief Determines the flash sector index for a given address.
+ * @param addr The flash memory address.
+ * @retval Sector index or 0xFF if address is invalid.
+ */
 uint8_t flash_get_sector(uint32_t addr) {
     if (addr < FLASH_BASE) {
         return 0xFF; // Invalid addr
@@ -76,6 +93,11 @@ uint8_t flash_get_sector(uint32_t addr) {
     return 0xFF; // addr
 }
 
+/**
+ * @brief Gets the starting address of a given sector.
+ * @param sector Sector index.
+ * @retval Sector start address, or 0 if invalid.
+ */
 uint32_t flash_get_sector_start(uint8_t sector) {
     if (sector >= FLASH_SECTOR_COUNT) {
         return 0;
@@ -89,6 +111,11 @@ uint32_t flash_get_sector_start(uint8_t sector) {
     return address;
 }
 
+/**
+ * @brief Gets the ending address of a given sector.
+ * @param sector Sector index.
+ * @retval Sector end address, or 0 if invalid.
+ */
 uint32_t flash_get_sector_end(uint8_t sector) {
     if (sector >= FLASH_SECTOR_COUNT) {
         return 0;
@@ -102,6 +129,11 @@ uint32_t flash_get_sector_end(uint8_t sector) {
     return end_address - 1; // Last valid address in sector
 }
 
+/**
+ * @brief Erases a single flash sector by its address.
+ * @param sector_addr Address located in the target sector.
+ * @retval Number of bytes that were erased if successful, 0 otherwise.
+ */
 int flash_erase_sector(uint32_t sector_addr) {
     // Check if any pending operations
     if (HAL_FLASH_GetError() != HAL_FLASH_ERROR_NONE) {
@@ -146,6 +178,11 @@ int flash_erase_sector(uint32_t sector_addr) {
     return FLASH_SECTORS_KB[sector] * 1024;
 }
 
+/**
+ * @brief Erases all flash sectors starting from a specified address.
+ * @param destination Starting address for erase.
+ * @retval 1 if successful, 0 otherwise.
+ */
 int flash_erase(uint32_t destination) {
     // Check if any pending operations
     if (HAL_FLASH_GetError() != HAL_FLASH_ERROR_NONE) {
@@ -185,6 +222,13 @@ int flash_erase(uint32_t destination) {
     return 1;
 }
 
+/**
+ * @brief Writes data to flash memory.
+ * @param addr Target flash address.
+ * @param data Pointer to data buffer.
+ * @param len Number of bytes to write.
+ * @retval 1 if successful, 0 otherwise.
+ */
 int flash_write(uint32_t addr, const uint8_t* data, size_t len) {
     if (len == 0) {
         return 1; // Nothing to do
@@ -253,12 +297,29 @@ int flash_write(uint32_t addr, const uint8_t* data, size_t len) {
     return 1;
 }
 
+/**
+ * @brief Reads data from flash memory.
+ * @param addr Source flash address.
+ * @param data Pointer to destination buffer.
+ * @param len Number of bytes to read.
+ */
 void flash_read(uint32_t addr, uint8_t* data, size_t len) {
     for (size_t i = 0; i < len; i++) {
         data[i] = *(__IO uint8_t*)(addr + i);
     }
 }
 
+
+/**
+ * @brief Writes data across sector boundaries, handling erasure and alignment.
+ * @param current_addr Current write address.
+ * @param current_sector Current sector index.
+ * @param data Data to write.
+ * @param data_len Length of data.
+ * @param new_addr Optional output pointer to receive next write address.
+ * @param new_sector Optional output pointer to receive new sector index.
+ * @retval 1 if successful, 0 otherwise.
+ */
 int flash_write_across_sectors(uint32_t current_addr, uint8_t current_sector,
                               const uint8_t* data, size_t data_len,
                               uint32_t* new_addr, uint8_t* new_sector) {
